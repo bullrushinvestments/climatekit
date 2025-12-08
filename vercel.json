@@ -1,0 +1,165 @@
+interface BuildCommand {
+    command: string;
+    output?: string;
+}
+
+interface EnvVariables {
+    [key: string]: string | undefined;
+}
+
+interface RedirectRule {
+    source: string;
+    has: { status: number; target: string };
+}
+
+interface HeaderPolicy {
+    source: string;
+    headers: Array<{ key: string; value: string }>;
+}
+
+interface CacheStrategy {
+    src: string;
+    headers?: Array<{ key: string; value: string }>;
+    immutable?: boolean;
+    maxAgeSeconds?: number;
+    browserCacheTtl?: number;
+    edgeCacheTtl?: number;
+}
+
+interface FrameworkSettings {
+    vercel?: { [key: string]: any };
+    netlify?: { [key: string]: any };
+}
+
+interface DeployConfig {
+    build: BuildCommand;
+    env: EnvVariables;
+    redirects: Array<RedirectRule>;
+    headers: Array<HeaderPolicy>;
+    cacheStrategies: Array<CacheStrategy>;
+    frameworkSettings: FrameworkSettings;
+}
+
+export const deployConfig: DeployConfig = {
+    build: {
+        command: "next build",
+        output: ".next"
+    },
+    env: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+        NEXT_PUBLIC_STRIPE_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY
+    },
+    redirects: [
+        { source: "/old-url", has: { status: 301, target: "/new-url" } }
+    ],
+    headers: [
+        {
+            source: "/",
+            headers: [
+                { key: "strict-transport-security", value: "max-age=63072000; includeSubDomains; preload" },
+                { key: "x-content-type-options", value: "nosniff" },
+                { key: "referrer-policy", value: "origin-when-cross-origin, strict-origin-when-cross-origin" }
+            ]
+        }
+    ],
+    cacheStrategies: [
+        {
+            src: "/api/:path*",
+            headers: [{ key: "x-cache-invalidate", value: "true" }],
+            immutable: true,
+            maxAgeSeconds: 0
+        },
+        {
+            src: "/_next/static/:path*",
+            browserCacheTtl: 31536000, // 1 year
+            edgeCacheTtl: 31536000 // 1 year
+        }
+    ],
+    frameworkSettings: {
+        vercel: { buildCommand: "next build", startCommand: "next start" },
+        netlify: { functions: "serverless-functions/" }
+    }
+};
+
+interface BuildCommand {
+    command: string;
+    output?: string;
+}
+
+interface EnvVariables {
+    [key: string]: string | undefined;
+}
+
+interface RedirectRule {
+    source: string;
+    has: { status: number; target: string };
+}
+
+interface HeaderPolicy {
+    source: string;
+    headers: Array<{ key: string; value: string }>;
+}
+
+interface CacheStrategy {
+    src: string;
+    headers?: Array<{ key: string; value: string }>;
+    immutable?: boolean;
+    maxAgeSeconds?: number;
+    browserCacheTtl?: number;
+    edgeCacheTtl?: number;
+}
+
+interface FrameworkSettings {
+    vercel?: { [key: string]: any };
+    netlify?: { [key: string]: any };
+}
+
+interface DeployConfig {
+    build: BuildCommand;
+    env: EnvVariables;
+    redirects: Array<RedirectRule>;
+    headers: Array<HeaderPolicy>;
+    cacheStrategies: Array<CacheStrategy>;
+    frameworkSettings: FrameworkSettings;
+}
+
+export const deployConfig: DeployConfig = {
+    build: {
+        command: "next build",
+        output: ".next"
+    },
+    env: {
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+        NEXT_PUBLIC_STRIPE_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY
+    },
+    redirects: [
+        { source: "/old-url", has: { status: 301, target: "/new-url" } }
+    ],
+    headers: [
+        {
+            source: "/",
+            headers: [
+                { key: "strict-transport-security", value: "max-age=63072000; includeSubDomains; preload" },
+                { key: "x-content-type-options", value: "nosniff" },
+                { key: "referrer-policy", value: "origin-when-cross-origin, strict-origin-when-cross-origin" }
+            ]
+        }
+    ],
+    cacheStrategies: [
+        {
+            src: "/api/:path*",
+            headers: [{ key: "x-cache-invalidate", value: "true" }],
+            immutable: true,
+            maxAgeSeconds: 0
+        },
+        {
+            src: "/_next/static/:path*",
+            browserCacheTtl: 31536000, // 1 year
+            edgeCacheTtl: 31536000 // 1 year
+        }
+    ],
+    frameworkSettings: {
+        vercel: { buildCommand: "next build", startCommand: "next start" },
+        netlify: { functions: "serverless-functions/" }
+    }
+};
